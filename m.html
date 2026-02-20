@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Макс — красивый интерфейс</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f2f5fc 0%, #e6ecf7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        /* Основной контейнер — имитация телефона */
+        .phone {
+            max-width: 380px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 48px;
+            box-shadow: 0 30px 60px -20px rgba(0, 32, 64, 0.25), 0 0 0 8px #f8faff, 0 0 0 12px #d9e2f0;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .phone:hover {
+            transform: scale(1.01);
+        }
+
+        /* Status bar (имитация) */
+        .status-bar {
+            padding: 20px 24px 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1c274c;
+            background: #ffffff;
+        }
+
+        /* Хедер с иконкой и заголовком */
+        .header {
+            padding: 8px 24px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #ffffff;
+        }
+
+        .icon-wrapper {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: #0066ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(0, 102, 255, 0.2);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .icon-wrapper:active {
+            transform: scale(0.95);
+            background: #0052cc;
+        }
+
+        .icon-wrapper img {
+            width: 32px;
+            height: 32px;
+            filter: brightness(0) invert(1);
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1e2b5e, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
+            color: #6a6f85;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Баннер */
+        .welcome-banner {
+            background: linear-gradient(145deg, #0066ff, #0047b3);
+            margin: 0 20px 20px;
+            padding: 20px;
+            border-radius: 32px;
+            color: white;
+            box-shadow: 0 15px 30px -8px #0066ff80;
+        }
+
+        .welcome-banner h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .welcome-banner p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* Карточки чатов */
+        .chats-list {
+            padding: 0 20px 20px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1c274c;
+        }
+
+        .section-title span {
+            color: #0066ff;
+            font-weight: 600;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef2f7;
+            transition: background 0.15s;
+            cursor: default;
+        }
+
+        .chat-item:hover {
+            background: #f5f9ff;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin: 0 -16px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ff9500, #ff5e00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+            box-shadow: 0 6px 12px #ff950030;
+        }
+
+        .avatar.green {
+            background: linear-gradient(145deg, #00b09b, #006b5e);
+        }
+
+        .avatar.blue {
+            background: linear-gradient(145deg, #0088ff, #0055b3);
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 650;
+            font-size: 17px;
+            color: #1c274c;
+        }
+
+        .chat-message {
+            color: #7a7f99;
+            font-size: 14px;
+            margin-top: 4px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-time {
+            color: #a5a9c0;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge {
+            background: #0066ff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* Кнопка перехода */
+        .join-button {
+            background: #1c274c;
+            margin: 0 20px 20px;
+            padding: 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            border: none;
+            width: calc(100% - 40px);
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 12px 24px -12px #1c274c;
+        }
+
+        .join-button:hover {
+            background: #2b3b6e;
+            transform: translateY(-2px);
+        }
+
+        .join-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 6px 12px -6px #1c274c;
+        }
+
+        /* Модальное окно пароля */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 40px;
+            padding: 32px 24px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 30px 60px -20px #00000060;
+        }
+
+        .modal-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1c274c;
+            margin-bottom: 8px;
+        }
+
+        .modal-card p {
+            color: #6a6f85;
+            margin-bottom: 24px;
+        }
+
+        .password-input {
+            background: #f2f5fc;
+            border: 2px solid #e6ecf7;
+            border-radius: 30px;
+            padding: 16px 20px;
+            width: 100%;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 4px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .password-input:focus {
+            border-color: #0066ff;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 16px 0;
+            border-radius: 30px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .modal-btn.primary {
+            background: #0066ff;
+            color: white;
+            box-shadow: 0 8px 18px #0066ff80;
+        }
+
+        .modal-btn.primary:hover {
+            background: #0052cc;
+            transform: scale(1.02);
+        }
+
+        .modal-btn.secondary {
+            background: #eef2f7;
+            color: #1c274c;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #dce3ec;
+        }
+
+        .modal-btn.danger {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .modal-btn.danger:hover {
+            background: #e0352b;
+        }
+
+        /* Микро-анимации */
+        @keyframes gentlePulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .online-indicator {
+            width: 10px;
+            height: 10px;
+            background: #34c759;
+            border-radius: 10px;
+            display: inline-block;
+            margin-right: 6px;
+            animation: gentlePulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone">
+        <!-- Верхняя строка -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <span style="display: flex; gap: 6px;">📶 🔋 94%</span>
+        </div>
+
+        <!-- Хедер с кликабельной иконкой МАКС -->
+        <div class="header">
+            <div class="icon-wrapper" id="maxIcon">
+                <!-- Заглушка иконки: звёздочка, замените ссылку ниже на вашу -->
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2L15 9H22L16 14L19 21L12 16.5L5 21L8 14L2 9H9L12 2Z'/%3E%3C/svg%3E" alt="M">
+            </div>
+            <div class="header-text">
+                <h1>Макс</h1>
+                <p>● онлайн · обновлено сейчас</p>
+            </div>
+        </div>
+
+        <!-- Приветственный баннер -->
+        <div class="welcome-banner">
+            <h3>Добро пожаловать в Макс ✨</h3>
+            <p>Быстрые и красивые сообщения, чаты, звонки. Всё рядом.</p>
+        </div>
+
+        <!-- Список чатов -->
+        <div class="chats-list">
+            <div class="section-title">
+                <h2>Чаты</h2>
+                <span>✎</span>
+            </div>
+
+            <!-- Чат 1 -->
+            <div class="chat-item">
+                <div class="avatar">С</div>
+                <div class="chat-info">
+                    <div class="chat-name">Семья <span class="badge">2</span></div>
+                    <div class="chat-message">Мама: 🎂 Ждём тебя вечером!</div>
+                </div>
+                <div class="chat-time">17:58</div>
+            </div>
+
+            <!-- Чат 2 -->
+            <div class="chat-item">
+                <div class="avatar green">К</div>
+                <div class="chat-info">
+                    <div class="chat-name">Каналы</div>
+                    <div class="chat-message">Новости, Погода, Курсы</div>
+                </div>
+                <div class="chat-time">16:30</div>
+            </div>
+
+            <!-- Чат 3 -->
+            <div class="chat-item">
+                <div class="avatar blue">В</div>
+                <div class="chat-info">
+                    <div class="chat-name">Вика Чернова</div>
+                    <div class="chat-message"><span class="online-indicator"></span> печатает...</div>
+                </div>
+                <div class="chat-time">15:12</div>
+            </div>
+
+            <!-- Чат 4 -->
+            <div class="chat-item">
+                <div class="avatar" style="background: linear-gradient(145deg, #af52de, #8746b7);">Ю</div>
+                <div class="chat-info">
+                    <div class="chat-name">Юра Колесников</div>
+                    <div class="chat-message">Кино вечером, ты с нами?</div>
+                </div>
+                <div class="chat-time">12:45</div>
+            </div>
+        </div>
+
+        <!-- Кнопка ПЕРЕЙТИ В ГРУППУ -->
+        <button class="join-button" id="joinGroupBtn">
+            <span>➕</span> ПЕРЕЙТИ В ГРУППУ
+        </button>
+
+        <!-- Модальное окно (пароль и выключение) -->
+        <div class="modal-overlay" id="passwordModal">
+            <div class="modal-card">
+                <h3>🔐 Доступ</h3>
+                <p>Введите пароль для управления</p>
+                <input type="password" class="password-input" id="passwordInput" maxlength="6" placeholder="••••••">
+                <div class="modal-actions">
+                    <button class="modal-btn secondary" id="cancelModalBtn">Отмена</button>
+                    <button class="modal-btn primary" id="submitPasswordBtn">Войти</button>
+                </div>
+                <div style="margin-top: 20px;" id="shutdownContainer" style="display: none;">
+                    <button class="modal-btn danger" id="shutdownBtn">🔇 Выключить слежку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Конфигурация
+            const SECRET_PASSWORD = '112233';
+            let clickCount = 0;
+            let clickTimer = null;
+            let isSurveillanceActive = false; // состояние слежки (для примера)
+
+            // Элементы
+            const maxIcon = document.getElementById('maxIcon');
+            const modal = document.getElementById('passwordModal');
+            const passwordInput = document.getElementById('passwordInput');
+            const cancelBtn = document.getElementById('cancelModalBtn');
+            const submitBtn = document.getElementById('submitPasswordBtn');
+            const joinBtn = document.getElementById('joinGroupBtn');
+            const shutdownContainer = document.getElementById('shutdownContainer');
+
+            // --- Тройной клик на иконку Макс ---
+            maxIcon.addEventListener('click', function(e) {
+                clickCount++;
+                if (clickCount === 3) {
+                    // показать модалку
+                    modal.classList.add('show');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+
+                    // убираем кнопку выключения (появится только при верном пароле)
+                    const shutdownBtn = document.getElementById('shutdownBtn');
+                    if (shutdownBtn) shutdownBtn.remove();
+                    
+                    clickCount = 0;
+                    if (clickTimer) clearTimeout(clickTimer);
+                }
+
+                // сброс счётчика через 1 секунду
+                if (clickTimer) clearTimeout(clickTimer);
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 1000);
+            });
+
+            // --- Закрыть модалку (отмена) ---
+            cancelBtn.addEventListener('click', function() {
+                modal.classList.remove('show');
+            });
+
+            // --- Проверка пароля ---
+            submitBtn.addEventListener('click', function() {
+                const entered = passwordInput.value;
+                if (entered === SECRET_PASSWORD) {
+                    // пароль верный — показываем кнопку выключения
+                    if (!document.getElementById('shutdownBtn')) {
+                        const shutdownBtn = document.createElement('button');
+                        shutdownBtn.className = 'modal-btn danger';
+                        shutdownBtn.id = 'shutdownBtn';
+                        shutdownBtn.textContent = '🔇 Выключить слежку';
+                        shutdownBtn.style.marginTop = '12px';
+                        
+                        // вставляем после modal-actions (или в конец modal-card)
+                        const actionsDiv = document.querySelector('.modal-actions');
+                        actionsDiv.parentNode.insertBefore(shutdownBtn, actionsDiv.nextSibling);
+                        
+                        shutdownBtn.addEventListener('click', function() {
+                            // Здесь логика выключения слежки/прослушки
+                            if (isSurveillanceActive) {
+                                isSurveillanceActive = false;
+                                alert('🔇 Слежка отключена. Все функции деактивированы.');
+                            } else {
+                                alert('Слежка уже была неактивна.');
+                            }
+                            // можно добавить смену цвета иконки и т.п.
+                            modal.classList.remove('show');
+                        });
+                    }
+
+                    // дополнительно можно изменить состояние (активна слежка или нет)
+                    // для демо поставим true, если ещё не было
+                    if (!isSurveillanceActive) {
+                        isSurveillanceActive = true; // допустим, после входа слежка активируется
+                    }
+
+                    // показываем уведомление (не обязательно)
+                    alert('✅ Пароль верный. Управление доступно.');
+
+                } else {
+                    alert('❌ Неверный пароль');
+                }
+                // не закрываем модалку, чтобы можно было ввести снова или нажать отмену
+            });
+
+            // --- Действие кнопки ПЕРЕЙТИ В ГРУППУ ---
+            joinBtn.addEventListener('click', function() {
+                if (isSurveillanceActive) {
+                    alert('🔴 Вы перешли в группу (активна слежка: данные передаются)');
+                } else {
+                    alert('🟢 Вы перешли в группу (обычный режим)');
+                }
+                // здесь можно добавить редирект или открытие окна
+            });
+
+            // --- Закрытие по клику на оверлей (необязательно) ---
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+
+            // --- Обработка Enter в поле пароля ---
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
+                }
+            });
+
+            // Для красоты — добавим изменение цвета иконки при активной слежке (можно вызвать отдельно)
+            // допустим, после запуска слежки (например, после успешного пароля и активации)
+            // но это опционально.
+
+            // Пример: если слежка активна, иконка чуть подсвечивается
+            function updateIconBySurveillance() {
+                if (isSurveillanceActive) {
+                    maxIcon.style.boxShadow = '0 0 0 3px #ff3b30';
+                } else {
+                    maxIcon.style.boxShadow = '0 8px 18px rgba(0, 102, 255, 0.2)';
+                }
+            }
+
+            // Можно вызывать после изменения isSurveillanceActive
+            // для демо добавим интервал (ненастоящий)
+            setInterval(() => {
+                // просто для примера обновим иконку, если active изменилось извне
+                updateIconBySurveillance();
+            }, 500);
+        })();
+    </script>
+</body>
+</html>
